@@ -1,6 +1,7 @@
 public class Card{
     protected int value;   //Value between 1 & 13, 1 ace, 11 jack, 12 queen, 13 king
     protected char suit;
+    protected boolean isVisible;
 
     public static final char[] ALL_SUITS = {'h', 'c', 'd', 's'};    //Hearts Clubs Diamonds Spades
 
@@ -13,11 +14,13 @@ public class Card{
                 break;
             }
             else this.suit = 's';   //Else default to spades
+        this.isVisible = true;
     }
 
     public Card(Card otherCard){
         this.value = otherCard.value;
         this.suit = otherCard.suit;
+        this.isVisible = otherCard.isVisible;
     }
 
     public int getValue(){ return this.value; }
@@ -81,6 +84,8 @@ public class Card{
 
     public String toShortString(){
         String retString = "";
+
+        if(!this.isVisible) return "## #";
 
         switch(this.value){
             case 1:
