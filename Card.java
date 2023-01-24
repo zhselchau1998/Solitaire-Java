@@ -89,19 +89,22 @@ public class Card{
 
         switch(this.value){
             case 1:
-                retString = "A ";
+                retString = " A ";
+                break;
+            case 10:
+                retString = "10 ";
                 break;
             case 11:
-                retString = "J ";
+                retString = " J ";
                 break;
             case 12:
-                retString = "Q ";
+                retString = " Q ";
                 break;
             case 13:
-                retString = "K ";
+                retString = " K ";
                 break;
             default:
-                retString = "" + this.value + " ";
+                retString = " " + this.value + " ";
         }
 
         retString = retString + this.suit;
