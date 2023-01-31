@@ -14,7 +14,7 @@ public class Card{
                 break;
             }
             else this.suit = 's';   //Else default to spades
-        this.isVisible = true;
+        this.isVisible = false;
     }
 
     public Card(Card otherCard){

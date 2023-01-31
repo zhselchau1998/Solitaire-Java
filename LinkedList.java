@@ -75,11 +75,10 @@ class LinkedList{   //Circular linked list
     }
 
     public Card get(int index){
-        if(this.head == null) return null;
-        if(index == 0) return head.data;
-
+        if(this.head == null || this.size <= index) return null;
         while(index < 0) index += this.size;
-        while(index >= this.size) index -= this.size;
+
+        if(index == 0) return head.data;
 
         int pos = 1;
         Node ptr = head.next;

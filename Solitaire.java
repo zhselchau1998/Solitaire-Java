@@ -29,6 +29,7 @@ public class Solitaire{
             this.board[x] = new LinkedList();
             for(int y=0; y<=x; y++)
                 this.board[x].add(fullDeck[fdPointer++]);
+            this.board[x].get(-1).isVisible = true;
         }
 
         //Populate draw pile
@@ -42,7 +43,9 @@ public class Solitaire{
 
     public void draw(){ //TODO: handle edge cases, this is just for testing right now
         for(int i=0; i<3; i++){
-            this.discardPile.addHead(this.drawPile.popTail());
+            Card card = this.drawPile.popTail();
+            card.isVisible = true;
+            this.discardPile.addHead(card);
         }
     }
 
@@ -52,28 +55,39 @@ public class Solitaire{
     }
 
     public void printToConsole(){
-        System.out.println("|-|------------------------------------------------------------------|");
-        System.out.println("|-| Hearts |  Clubs |Diamonds| Spades |------------------------------|");
-        System.out.println("|-|   "+this.CardToString(this.finalPiles[0].getHeadCard())+" |   "
-           +this.CardToString(this.finalPiles[1].getHeadCard())+" |   "
-           +this.CardToString(this.finalPiles[2].getHeadCard())+" |   "
-           +this.CardToString(this.finalPiles[3].getHeadCard())+" |-----|  Top |Second| Draw |---|");
-        System.out.println("|-|-----------------------------------------| "+this.CardToString(this.discardPile.get(0))+" | "+this.CardToString(this.discardPile.get(1))+" | "+this.CardToString(this.discardPile.get(2))+" |---|");
+        System.out.println("|-|-----------------------------------------------------------|");
+        System.out.println("|-|  H  |  C  |  D  |  S  |-----| 1st | 2nd | 3rd |---| Deck|-|");
+        System.out.print("|-|"+this.CardToString(this.finalPiles[0].getHeadCard())+" |"
+           +this.CardToString(this.finalPiles[1].getHeadCard())+" |"
+           +this.CardToString(this.finalPiles[2].getHeadCard())+" |"
+           +this.CardToString(this.finalPiles[3].getHeadCard())+" |-----|"
+           +this.CardToString(this.discardPile.get(0))+" |"
+           +this.CardToString(this.discardPile.get(1))+" |"
+           +this.CardToString(this.discardPile.get(2))+" |---|  "
+           +this.drawPile.size);
+        if(this.drawPile.size < 10) System.out.println("  |-|");
+        else System.out.println(" |-|");
+        System.out.println("|-|-----------------------------------------------------------|");
+        System.out.println("|-|-----|  1  |  2  |  3  |  4  |  5  |  6  |  7  |-----------|");
+        boolean boardExists = true;
+        int itr = 0;
+        while(boardExists){
+            String output = "|-|-----|";
+            boardExists = false;
+            for(int i=0; i<7; i++){
+                Card tmp = this.board[i].get(itr);
+                output += this.CardToString(tmp) + " |";
+                if(tmp != null) boardExists = true;
+            }
+            output += "-----------|";
+            itr++;
+            System.out.println(output);
+        }
+        System.out.println("|-|-----------------------------------------------------------|");
     }
 
     public static void main(String[] args){
         Solitaire game = new Solitaire();
-
-        System.out.println(game.drawPile.get(-1).toShortString());
-        System.out.println(game.drawPile.get(-2).toShortString());
-        System.out.println(game.drawPile.get(-3).toShortString());
-        game.draw();
-
-        game.printToConsole();
-
-        System.out.println(game.drawPile.get(-1).toShortString());
-        System.out.println(game.drawPile.get(-2).toShortString());
-        System.out.println(game.drawPile.get(-3).toShortString());
         game.draw();
 
         game.printToConsole();
