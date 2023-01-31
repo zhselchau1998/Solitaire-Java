@@ -1,7 +1,7 @@
 public class Solitaire{
     Deck deckObject;
-    Card[] drawPile;
-    Card[] discardPile;
+    LinkedList drawPile;
+    LinkedList discardPile;
     LinkedList[] board; 
     LinkedList[] finalPiles;  //0:hearts, 1:clubs, 2:diamonds, 3:spades
 
@@ -12,8 +12,8 @@ public class Solitaire{
 
     public Solitaire(){
         this.deckObject = new Deck();
-        this.drawPile = new Card[MAX_DRAW_PILE];
-        this.discardPile = new Card[MAX_DISCARD_PILE];
+        this.drawPile = new LinkedList();
+        this.discardPile = new LinkedList();
         this.board = new LinkedList[NUM_BOARD_PILES];
         this.finalPiles = new LinkedList[4];
 
@@ -33,11 +33,17 @@ public class Solitaire{
 
         //Populate draw pile
         for(int i=0; i < MAX_DRAW_PILE; i++)
-            this.drawPile[i] = fullDeck[fdPointer++];
+            this.drawPile.add(fullDeck[fdPointer++]);
 
         //Initialize final piles
         for(int i=0; i<4; i++)
             this.finalPiles[i] = new LinkedList();
+    }
+
+    public void draw(){ //TODO: handle edge cases, this is just for testing right now
+        for(int i=0; i<3; i++){
+            this.discardPile.addHead(this.drawPile.popTail());
+        }
     }
 
     private String CardToString(Card card){
@@ -52,13 +58,23 @@ public class Solitaire{
            +this.CardToString(this.finalPiles[1].getHeadCard())+" |   "
            +this.CardToString(this.finalPiles[2].getHeadCard())+" |   "
            +this.CardToString(this.finalPiles[3].getHeadCard())+" |-----|  Top |Second| Draw |---|");
-        //System.out.println("|-|-----------------------------------------| "++" | "++" | "++" |---|");
+        System.out.println("|-|-----------------------------------------| "+this.CardToString(this.discardPile.get(0))+" | "+this.CardToString(this.discardPile.get(1))+" | "+this.CardToString(this.discardPile.get(2))+" |---|");
     }
 
     public static void main(String[] args){
         Solitaire game = new Solitaire();
-        System.out.println("Draw Pile");
-        for(Card c : game.drawPile) System.out.println(c.toString());
+
+        System.out.println(game.drawPile.get(-1).toShortString());
+        System.out.println(game.drawPile.get(-2).toShortString());
+        System.out.println(game.drawPile.get(-3).toShortString());
+        game.draw();
+
+        game.printToConsole();
+
+        System.out.println(game.drawPile.get(-1).toShortString());
+        System.out.println(game.drawPile.get(-2).toShortString());
+        System.out.println(game.drawPile.get(-3).toShortString());
+        game.draw();
 
         game.printToConsole();
         

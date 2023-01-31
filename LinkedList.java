@@ -15,7 +15,18 @@ class LinkedList{   //Circular linked list
         this.add(data);
     }
 
-    public void add(Card data){
+    public void add(Card data) { 
+        this.addTail(data);
+    }
+
+    public void addHead(Card data){
+        if(data == null) return;
+        this.addTail(data);
+        this.head = this.head.prev;
+    }
+
+    public void addTail(Card data){ //Adds at tail
+        if(data == null) return;
         if(this.head == null){
             this.head = new Node(data);
             this.head.next = this.head;
@@ -61,6 +72,25 @@ class LinkedList{   //Circular linked list
         }
         this.size--;
         return tmp;
+    }
+
+    public Card get(int index){
+        if(this.head == null) return null;
+        if(index == 0) return head.data;
+
+        while(index < 0) index += this.size;
+        while(index >= this.size) index -= this.size;
+
+        int pos = 1;
+        Node ptr = head.next;
+        while(pos < index){
+            ptr = ptr.next;
+            pos++;
+        }
+
+        if(ptr == this.head) return null;
+
+        return ptr.data;
     }
 
     public Card[] toArray(){
