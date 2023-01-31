@@ -27,7 +27,7 @@ class LinkedList{   //Circular linked list
 
     public void addTail(Card data){ //Adds at tail
         if(data == null) return;
-        if(this.head == null){
+        if(this.isEmpty()){
             this.head = new Node(data);
             this.head.next = this.head;
             this.head.prev = this.head;
@@ -43,7 +43,7 @@ class LinkedList{   //Circular linked list
 
     public Card popTail(){
         Card tmp = null;
-        if(this.size <= 0){ return tmp; }
+        if(this.isEmpty()){ return tmp; }
         else if(this.size == 1){
             tmp = this.head.data;
             this.head = null;
@@ -59,7 +59,7 @@ class LinkedList{   //Circular linked list
 
     public Card popHead(){
         Card tmp = null;
-        if(this.size <= 0){ return tmp; }
+        if(this.isEmpty()){ return tmp; }
         else if(this.size == 1){
             tmp = this.head.data;
             this.head = null;
@@ -75,7 +75,7 @@ class LinkedList{   //Circular linked list
     }
 
     public Card get(int index){
-        if(this.head == null || this.size <= index) return null;
+        if(this.isEmpty() || this.size <= index) return null;
         while(index < 0) index += this.size;
 
         if(index == 0) return head.data;
@@ -92,6 +92,12 @@ class LinkedList{   //Circular linked list
         return ptr.data;
     }
 
+    public Card getTail(){
+        if(this.isEmpty()) return null;
+        return this.head.prev.data;
+
+    }
+
     public Card[] toArray(){
         Card[] retArr = new Card[this.size];
         Node ptr = this.head;
@@ -105,8 +111,12 @@ class LinkedList{   //Circular linked list
     }
 
     public Card getHeadCard(){
-        if(this.head == null) return null;
+        if(this.isEmpty()) return null;
         return this.head.data;
+    }
+
+    public boolean isEmpty(){
+        return this.size == 0;
     }
 
     class Node{
