@@ -11,7 +11,6 @@ public class Solitaire{
 
     private static final int MAX_DRAW_PILE = 24; //52 - 28
     private static final int MAX_DISCARD_PILE = 24;
-    private static final int MAX_BOARD_PILE = 19; //6 + 13
     private static final int NUM_BOARD_PILES = 7;
 
     public Solitaire(){
@@ -76,11 +75,11 @@ public class Solitaire{
         if(action.compareTo("DRAW") == 0) this.draw();
         else if(action.compareTo("EXIT") == 0) this.inGame = false;
         else if(action.compareTo("HELP") == 0) this.printHelp();
-        else if(this.isValidSelection(action)) this.moveFrom(action);
+        else if(this.isValidMoveSelection(action)) this.moveFrom(action);
         else System.out.println("\nType \"help\" for a list of commands");
     }
 
-    private boolean isValidSelection(String cmd){
+    private boolean isValidMoveSelection(String cmd){
         if(cmd.compareTo("1")==0) return true;
         if(cmd.compareTo("2")==0) return true;
         if(cmd.compareTo("3")==0) return true;
@@ -97,7 +96,67 @@ public class Solitaire{
     }
 
     private void moveFrom(String location){
+        Card card = null;
+        boolean moved = false;
 
+        //get card
+        if(location.compareTo("FLOP") == 0) card = this.discardPile.getHeadCard();
+        else if(location.compareTo("H") == 0) card = this.finalPiles[0].getHeadCard();
+        else if(location.compareTo("C") == 0) card = this.finalPiles[1].getHeadCard();
+        else if(location.compareTo("D") == 0) card = this.finalPiles[2].getHeadCard();
+        else if(location.compareTo("S") == 0) card = this.finalPiles[3].getHeadCard();
+        else{ //is board
+            int i = Integer.parseInt(location) - 1;
+            card = this.board[i].getTail();
+            //TODO: implement moving chunks of a board
+        }
+
+        if(card == null) return;
+
+        //first check if this card can go in final piles
+        if(card.suit == 'h'){
+            if(this.finalPiles[0].isEmpty()) moved = card.value == 1;   //if ace and nothing in pile
+            else moved = card.value == this.finalPiles[0].getHeadCard().value+1;
+            if(moved) this.finalPiles[0].addHead(card);
+        }
+        if(card.suit == 'c'){
+            if(this.finalPiles[1].isEmpty()) moved = card.value == 1;
+            else moved = card.value == this.finalPiles[1].getHeadCard().value+1;
+            if(moved) this.finalPiles[1].addHead(card);
+        }
+        if(card.suit == 'd'){
+            if(this.finalPiles[2].isEmpty()) moved = card.value == 1;
+            else moved = card.value == this.finalPiles[2].getHeadCard().value+1;
+            if(moved) this.finalPiles[2].addHead(card);
+        }
+        if(card.suit == 's'){
+            if(this.finalPiles[3].isEmpty()) moved = card.value == 1;
+            else moved = card.value == this.finalPiles[3].getHeadCard().value+1;
+            if(moved) this.finalPiles[3].addHead(card);
+        }
+
+        //next check if this card can move to anywhere on the board
+        for(int i=0; i < this.NUM_BOARD_PILES; i++)
+            //TODO: implement moving chunks of a board
+            if(!moved){
+                if(this.board[i].isEmpty()) moved = card.value == 13;   //if king and nothing in pile
+                else moved = card.value == this.board[i].getTail().value - 1 && !card.isSameColor(this.board[i].getTail());
+                if(moved) this.board[i].addTail(card);
+            }
+
+        //last if card moved then remove it from old pile
+        if(moved){
+            if(location.compareTo("FLOP") == 0) this.discardPile.popHead();
+            else if(location.compareTo("H") == 0) this.finalPiles[0].popHead();
+            else if(location.compareTo("C") == 0) this.finalPiles[1].popHead();
+            else if(location.compareTo("D") == 0) this.finalPiles[2].popHead();
+            else if(location.compareTo("S") == 0) this.finalPiles[3].popHead();
+            else{ //is board
+                int i = Integer.parseInt(location) - 1;
+                this.board[i].popTail();
+                this.board[i].getTail().isVisible = true;
+            }
+        }
     }
 
     private void printHelp(){

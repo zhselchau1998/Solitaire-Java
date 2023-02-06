@@ -112,6 +112,18 @@ public class Card{
         return retString.toUpperCase();
     }
 
+    public boolean isSameColor(Card c){
+        switch(c.suit){
+            case 'h':
+            case 'd':
+                return this.suit == 'h' || this.suit == 'd';
+            case 'c':
+            case 's':
+                return this.suit == 'c' || this.suit == 's';
+        }
+        return false;
+    }
+
     private int roundValue(int inputVal){
         int retVal = (inputVal > 13) ? 13 : inputVal;
         retVal = (retVal < 1) ? 1 : retVal;
