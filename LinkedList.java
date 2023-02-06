@@ -41,6 +41,11 @@ class LinkedList{   //Circular linked list
         this.size++;
     }
 
+    public void addList(LinkedList ll){ //Adds a whole linked list
+        if(ll == null || ll.isEmpty()) return;
+        while(!ll.isEmpty()) this.add(ll.popHead());
+    }
+
     public Card popTail(){
         Card tmp = null;
         if(this.isEmpty()){ return tmp; }
@@ -74,6 +79,66 @@ class LinkedList{   //Circular linked list
         return tmp;
     }
 
+    public LinkedList popList(int index){
+        if(this.isEmpty() || this.size <= index) return null;
+        while(index < 0) index += this.size;
+
+        LinkedList retLL = new LinkedList();
+
+        if(index == 0){
+            retLL.size = this.size;
+            retLL.head = this.head;
+            this.size = 0;
+            this.head = null;
+            return retLL;
+        }
+        
+        int pos = 1;
+        Node ptr = this.head.next;
+        Node tmp = null;
+        while(pos < index){
+            ptr = ptr.next;
+            pos++;
+        }
+
+        retLL.size = this.size - index;
+        this.size = index;
+        retLL.head = ptr;
+        tmp = this.head.prev;
+        this.head.prev.next = ptr;  //old tail -> new head
+        this.head.prev = ptr.prev;  //old head -> new tail
+        ptr.prev.next = this.head;  //new tail -> old head
+        ptr.prev = tmp;             //new head -> old tail
+
+
+        return retLL;
+    }
+
+    public LinkedList getList(int index){
+        if(this.isEmpty() || this.size <= index) return null;
+        while(index < 0) index += this.size;
+
+        LinkedList retLL = new LinkedList();
+
+        Node ptr = this.head.next;
+        if(index == 0) retLL.add(this.head.data);
+        
+        int pos = 1;
+        ptr = this.head.next;
+        Node tmp = null;
+        while(pos < index){
+            ptr = ptr.next;
+            pos++;
+        }
+
+        while(ptr != head){
+            retLL.add(ptr.data);
+            ptr = ptr.next;
+        }
+        return retLL;
+
+    }
+
     public Card get(int index){
         if(this.isEmpty() || this.size <= index) return null;
         while(index < 0) index += this.size;
@@ -81,7 +146,7 @@ class LinkedList{   //Circular linked list
         if(index == 0) return head.data;
 
         int pos = 1;
-        Node ptr = head.next;
+        Node ptr = this.head.next;
         while(pos < index){
             ptr = ptr.next;
             pos++;
@@ -128,5 +193,41 @@ class LinkedList{   //Circular linked list
             this.next = null;
             this.prev = null;
         }
+    }
+
+    public static void main(String[] args){
+        LinkedList test = new LinkedList();
+        test.add(new Card(1, 'c', true));
+        test.add(new Card(2, 'c', true));
+        test.add(new Card(3, 'c', true));
+
+        LinkedList test1 = new LinkedList();
+        test1.add(new Card(4, 's', true));
+
+        System.out.println("Test 1 before");
+        for(int i=0; i < test.size; i++)
+            System.out.print(test.get(i).toShortString() + " -> ");
+        System.out.println("\nTest 2 before");
+        for(int i=0; i < test1.size; i++)
+            System.out.print(test1.get(i).toShortString() + " -> ");
+
+        test1.addList(test);
+
+        System.out.println("\n\nTest 1 after");
+        for(int i=0; i < test.size; i++)
+            System.out.print(test.get(i).toShortString() + " -> ");
+        System.out.println("\nTest 2 after");
+        for(int i=0; i < test1.size; i++)
+            System.out.print(test1.get(i).toShortString() + " -> ");
+
+        test = test1.popList(1);
+    
+        System.out.println("\n\nTest 1 after 2");
+        for(int i=0; i < test.size; i++)
+            System.out.print(test.get(i).toShortString() + " -> ");
+        System.out.println("\nTest 2 after 2");
+        for(int i=0; i < test1.size; i++)
+            System.out.print(test1.get(i).toShortString() + " -> ");
+
     }
 }

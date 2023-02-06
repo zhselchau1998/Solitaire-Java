@@ -98,6 +98,8 @@ public class Solitaire{
     private void moveFrom(String location){
         Card card = null;
         boolean moved = false;
+        Card[] batch = null;
+        int batchIdx = -1;
 
         //get card
         if(location.compareTo("FLOP") == 0) card = this.discardPile.getHeadCard();
@@ -108,7 +110,8 @@ public class Solitaire{
         else{ //is board
             int i = Integer.parseInt(location) - 1;
             card = this.board[i].getTail();
-            //TODO: implement moving chunks of a board
+            batch = this.board[i].toArray();
+            batchIdx = batch.length-1;
         }
 
         if(card == null) return;
@@ -137,12 +140,26 @@ public class Solitaire{
 
         //next check if this card can move to anywhere on the board
         for(int i=0; i < this.NUM_BOARD_PILES; i++)
-            //TODO: implement moving chunks of a board
             if(!moved){
                 if(this.board[i].isEmpty()) moved = card.value == 13;   //if king and nothing in pile
                 else moved = card.value == this.board[i].getTail().value - 1 && !card.isSameColor(this.board[i].getTail());
-                if(moved) this.board[i].addTail(card);
+                if(moved){
+                    board[i].add(card);
+                }
             }
+
+        //Also check if batch exists
+        if(batch != null && !moved)
+            for(int i=0; i < this.NUM_BOARD_PILES; i++)
+                for(int j=batch.length-2; j>=0; j--)
+                    if(!moved && batch[j].isVisible){
+                        if(this.board[i].isEmpty()) moved = batch[j].value == 13;   //if king and nothing in pile
+                        else moved = batch[j].value == this.board[i].getTail().value - 1 && !batch[j].isSameColor(this.board[i].getTail());
+                        if(moved){
+                            board[i].addList(board[Integer.parseInt(location) - 1].getList(j));
+                            batchIdx = j;
+                        }
+                    }
 
         //last if card moved then remove it from old pile
         if(moved){
@@ -153,8 +170,8 @@ public class Solitaire{
             else if(location.compareTo("S") == 0) this.finalPiles[3].popHead();
             else{ //is board
                 int i = Integer.parseInt(location) - 1;
-                this.board[i].popTail();
-                this.board[i].getTail().isVisible = true;
+                this.board[i].popList(batchIdx);
+                if(!this.board[i].isEmpty())this.board[i].getTail().isVisible = true;
             }
         }
     }

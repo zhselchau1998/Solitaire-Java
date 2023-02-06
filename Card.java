@@ -17,6 +17,18 @@ public class Card{
         this.isVisible = false;
     }
 
+    public Card(int value, char suit, boolean isVisible){
+        
+        this.value = roundValue(value);
+        for(char c : ALL_SUITS)
+            if(suit == c){
+                this.suit = suit;   //If valid suit accept
+                break;
+            }
+            else this.suit = 's';   //Else default to spades
+        this.isVisible = isVisible;
+    }
+
     public Card(Card otherCard){
         this.value = otherCard.value;
         this.suit = otherCard.suit;
